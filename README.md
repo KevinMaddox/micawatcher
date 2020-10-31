@@ -26,7 +26,7 @@ MicaWatcher(isEnabled, options)
 | Arugment | Type | Def. Value | Description |
 | --- | --- | --- | --- |
 | isEnabled | boolean | true | Enables or disables the watcher. Disabling the watcher will render calls to watch() and unwatch() useless, preventing the need to comment out lines of code. |
-| options | object | See: Options | Configuration options for initializing instances. |
+| options | object | See: Configuration Options | Configuration options for initializing instances. |
 ### Configuration Options
 | Option | Type | Def. Value | Description |
 | --- | --- | --- | --- |
@@ -39,6 +39,13 @@ MicaWatcher(isEnabled, options)
 | y | number | 24 | The starting y position of the instance, measured in pixels. |
 ### Member Functions
 #### watch(objToWatch, key)
+| Arugment | Type | Description |
+| --- | --- | --- |
+| objToWatch | object | The object to be added to the watch list. |
+| key | string | A meaningful name/key for the object, which will appear in the watch list. |
+#### unwatch(key)
+| Arugment | Type | Description |
+| --- | --- | --- |
+| key | string | The name/key previously assigned to the object via watch(). |
 ## Notes
-All variables set to be watched must be Objects. Because references and pointers aren't explicitly available in JavaScript (outside of how Objects are accessed), MicaWatcher cannot watch other data types, such as Numbers or Strings.
-You may create multiple watcher instances.
+All variables set to be watched must be Objects. Because references and pointers aren't explicitly available in JavaScript (outside of how Objects are accessed), MicaWatcher cannot watch other data types, such as Numbers or Strings.  You may create multiple MicaWatcher instances.

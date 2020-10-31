@@ -197,7 +197,7 @@ class MicaWatcher {
             this.objectInputElem.focus();
     }
     
-    unWatch(key) {
+    unwatch(key) {
         // Don't do anything if watcher is disabled.
         if (this.isDisabled)
             return;
