@@ -1,0 +1,96 @@
+.micawatcher {
+    position: absolute;
+    background: #f8f8f8;
+    width: 320px;
+    height: 240px;
+    min-width: 320px;
+    min-height: 240px;
+    top: 24px;
+    left: 24px;
+    /* overflow-y: scroll; */
+    overflow: hidden;
+    resize: both;
+    white-space: pre;
+    
+    border: 1px solid #70758c;
+    /* border-radius: 2px; */
+    margin: 0;
+    /* padding: 16px; */
+    display: flex;
+    flex-direction: column;
+}
+
+.micawatcher * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: 11px;
+    font-weight: normal;
+}
+
+.micawatcher h1 {
+    border: none;
+    background: linear-gradient(to bottom, #f7fafc 0%,#e6e9f4 50%,#d5def2 51%,#e5edff 100%);
+    border-bottom: 1px solid #70758c;
+    padding: 4px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.micawatcher-items {
+    overflow-y: scroll;
+    padding: 8px;
+    flex-grow: 1;
+}
+
+.micawatcher h2 {
+    background: #a0a0a0;
+    padding: 4px;
+    cursor: pointer;
+    user-select: none;
+    margin-bottom: 4px;
+}
+
+.micawatcher p {
+    margin-bottom: 12px;
+}
+
+.micawatcher-add-controls {
+    display: flex;
+    align-items: center;
+    padding: 8px 4px;
+}
+
+.micawatcher-add-input {
+    padding: 4px;
+    border: 1px solid #70758c;
+    flex-grow: 1;
+    margin-right: 8px;
+}
+
+.micawatcher-add-button {
+    background: #c0c0c0;
+    border-radius: 5px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.micawatcher-add-button:hover {
+    background: #a0a0a0;
+}
+
+.micawatcher-pause-controls {
+    border-top: 1px solid #ccccea;
+    padding: 4px 8px;
+    cursor: default;
+    user-select: none;
+}
+
+.micawatcher-unselectable {
+    user-select: none;
+    cursor: default;
+}
