@@ -48,4 +48,4 @@ MicaWatcher(isEnabled, options)
 | --- | --- | --- |
 | key | string | The name/key previously assigned to the object via watch(). |
 ## Notes
-All variables set to be watched must be Objects. Because references and pointers aren't explicitly available in JavaScript (outside of how Objects are accessed), MicaWatcher cannot watch other data types, such as Numbers or Strings.  You may create multiple MicaWatcher instances.
+All variables set to be watched must be Objects. Because references and pointers aren't explicitly available in JavaScript (outside of how Objects are accessed), MicaWatcher cannot watch other data types, such as Numbers or Strings.<br><br>You may create multiple MicaWatcher instances.<br><br>Backwards compatibility was not a focus with this and, as such, I used all sorts of ES6 constructs and keywords in this library. Please ensure you remove the watcher from your code when ready to deploy (you should anyway, given it's a debugging tool).
