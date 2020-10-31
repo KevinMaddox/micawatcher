@@ -35,11 +35,22 @@ class MicaWatcher {
     options;
     
     constructor(isEnabled = true, options = {}) {
+        // Validate enable/disable toggle.
+        if (typeof isEnabled !== 'boolean') {
+            this.report('Warning', 'Enable/disable toggle must be passed in as a boolean.');
+            isEnabled = true;
+        }
+            
         // Don't initialize anything if watcher is disabled.
         this.isDisabled = !isEnabled;
         if (this.isDisabled)
             return;
         
+        // Validate configuration options.
+        if (typeof options !== 'object') {
+            this.report('Warning', 'Configuration options must be passed in as an object.');
+            options = {};
+        }
         this.validateOptions(options);
         
         // Initialize variables.
@@ -383,7 +394,8 @@ class MicaWatcher {
     
     report(level, msg) {
         console.log('MicaWatcher ' + level + ': ' + msg);
-        this.generalStatusElem.innerHTML = 'Error! Please check console.';
+        if (this.generalStatusElem)
+            this.generalStatusElem.innerHTML = 'Error! Please check console.';
         
         window.clearTimeout(this.statusTimeout);
         this.statusTimeout = window.setTimeout(this.clearStatusTimeout.bind(this), 3000);
