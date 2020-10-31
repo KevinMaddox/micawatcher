@@ -1,3 +1,14 @@
+/*
+    TODO:
+    - Clean up CSS
+    - Collapsable data display items
+    - Pause button
+    - Adding new items via input
+    - Remove existing items
+    - Minimize & close buttons
+    - Prettify
+*/
+
 class MicaWatcher {
     watchedObjects;     // The data being watched.
     
