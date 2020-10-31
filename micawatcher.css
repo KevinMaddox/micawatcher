@@ -1,58 +1,94 @@
-.micawatcher {
-    position: absolute;
-    background: #f8f8f8;
-    width: 320px;
-    height: 240px;
-    min-width: 320px;
-    min-height: 240px;
-    top: 24px;
-    left: 24px;
-    /* overflow-y: scroll; */
-    overflow: hidden;
-    resize: both;
-    white-space: pre;
-    
-    border: 1px solid #70758c;
-    /* border-radius: 2px; */
-    margin: 0;
-    /* padding: 16px; */
-    display: flex;
-    flex-direction: column;
-}
-
-.micawatcher * {
-    margin: 0;
-    padding: 0;
+.micawatcher, .micawatcher * {
+    border: none;
     box-sizing: border-box;
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
     font-weight: normal;
+    margin: 0;
+    padding: 0;
 }
 
-.micawatcher h1 {
-    border: none;
-    background: linear-gradient(to bottom, #f7fafc 0%,#e6e9f4 50%,#d5def2 51%,#e5edff 100%);
+.micawatcher {
+    background: #f8f8f8;
+    border: 1px solid #70758c;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    min-height: 240px;
+    min-width: 320px;
+    overflow: hidden;
+    position: absolute;
+    resize: both;
+}
+
+.micawatcher-title-bar {
+    align-items: center;
+    background: linear-gradient(to right, #c3ecf7 0%,#afaee5 100%);
     border-bottom: 1px solid #70758c;
+    display: flex;
+    justify-content: space-between;
+    letter-spacing: 3px;
     padding: 4px;
-    cursor: pointer;
     user-select: none;
+}
+.micawatcher-title-bar h1 {
+    font-weight: bold;
+}
+
+.micawatcher-minimize-button,
+.micawatcher-remove-button {
+    align-items: center;
+    border-radius: 2px;
+    display: flex;
+    height: 16px;
+    justify-content: center;
+    margin-left: 4px;
+    width: 16px;
+}
+
+.micawatcher-minimize-button div {
+    background-image:  url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAB3RJTUUH5AofEgYQV4RsoAAAABd0RVh0U29mdHdhcmUAR0xEUE5HIHZlciAzLjRxhaThAAAACHRwTkdHTEQzAAAAAEqAKR8AAAAEZ0FNQQAAsY8L/GEFAAAABmJLR0QA/wD/AP+gvaeTAAAAHklEQVR4nGP4//8/Az6MV5I4BQWlPf/xYcIKaO9IAFHitnHuVUnVAAAAAElFTkSuQmCC');
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 8px;
+    width: 8px;
+}
+
+.micawatcher-remove-button div {
+    background-image:  url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAB3RJTUUH5AofEgYJM+/EYAAAABd0RVh0U29mdHdhcmUAR0xEUE5HIHZlciAzLjRxhaThAAAACHRwTkdHTEQzAAAAAEqAKR8AAAAEZ0FNQQAAsY8L/GEFAAAABmJLR0QA/wD/AP+gvaeTAAAALUlEQVR4nGMoKO35D8JAwICMYeJwBrIiZDEMAXQNGEaim0acArxWEHQkIW8CAEeNqTlO8xFcAAAAAElFTkSuQmCC');
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 8px;
+    width: 8px;
 }
 
 .micawatcher-items {
-    overflow-y: scroll;
-    padding: 8px;
+    display: flex;
+    flex-direction: column;
     flex-grow: 1;
+    overflow-y: scroll;
+    padding: 0 8px;
+    margin-top: 8px;
 }
 
-.micawatcher h2 {
-    background: #a0a0a0;
-    padding: 4px;
-    cursor: pointer;
-    user-select: none;
+.micawatcher-item > div {
+    align-items: center;
+    background: #d8dcf0;
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 4px;
+    padding: 2px 4px;
 }
 
-.micawatcher p {
+.micawatcher-item h2 {
+    flex-grow: 1;
+    user-select: none;
+    font-weight: bold;
+}
+
+.micawatcher-item p {
     margin-bottom: 12px;
+    white-space: pre;
 }
 
 .micawatcher-add-controls {
@@ -61,36 +97,79 @@
     padding: 8px 4px;
 }
 
-.micawatcher-add-input {
-    padding: 4px;
+.micawatcher-add-input-obj,
+.micawatcher-add-input-key {
     border: 1px solid #70758c;
-    flex-grow: 1;
     margin-right: 8px;
+    padding: 4px;
+    width: 100%;
+    flex-basis: 100%;
+    min-width: 0;
 }
 
 .micawatcher-add-button {
-    background: #c0c0c0;
-    border-radius: 5px;
-    height: 100%;
-    display: flex;
     align-items: center;
+    border-radius: 5px;
+    display: flex;
+    height: 100%;
     padding: 0 8px;
-    cursor: pointer;
     user-select: none;
 }
 
-.micawatcher-add-button:hover {
-    background: #a0a0a0;
-}
-
-.micawatcher-pause-controls {
+.micawatcher-toggle-controls {
     border-top: 1px solid #ccccea;
     padding: 4px 8px;
     cursor: default;
     user-select: none;
+    display: flex;
+    align-items: stretch;
+}
+
+.micawatcher-toggle-button {
+    background-image:  url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAA8CAYAAABmdppWAAAAB3RJTUUH5AofESgSsMu6+QAAABd0RVh0U29mdHdhcmUAR0xEUE5HIHZlciAzLjRxhaThAAAACHRwTkdHTEQzAAAAAEqAKR8AAAAEZ0FNQQAAsY8L/GEFAAAABmJLR0QA/wD/AP+gvaeTAAABoUlEQVR4nOXVy0rDQBQG4D6yG9/C13EhiEKxoHhD0dLWXkxs2ubWNpkkTdLUlBwhGDKZzMyZheDiC1n9MMyZ/3TyPO+cnJ7lheIfC8JIlAIVwRDoBUkFJhgCtyShkgmGwLUXM4kEQ6C73XHhCYZAex0JYQVDoOVGUmjBELiyQ5TfwRA4M4gSRRYE9mdEiTJwoIUotSMP9VBK46V8zHdCWsdmbMRcuAd7ukyZhJ/ebJVSSZeDZmUV6PrS7QNQUrDFR+kKUB5YBKX7A1C2U+Ikq0BfShRnVNJjE0R7JuHB9sOUC/fTa1qjMuv1Z436iZTG+nK2MUqtYA17p0S5AibLWIky8NNMUGpH1qxESuOlfDmpkNaxMZw9F+7BXq4zJuGnt9pkVNLlYHuHCnR9Of43+Ec7RTMjoGynTBdhBfpSJkZIJT02Iz1gEh7soRZw4X56/SkR0loOb2MipbG+Xkc+Sq1gbx4tJcoVcH6lK1EGXnTnKLUjX/YWUhov5frWFNI6Nt17mwv3YPeeXCbhp3f3sqGSLoeHd68CXV/PAwL+5E45AhJDIljpNVMWAAAAAElFTkSuQmCC');
+    background-position: 0px 0px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+}
+
+.micawatcher-toggle-button:hover {
+    background-position: 0px -20px;
+}
+
+.micawatcher-toggle-button:hover:active {
+    background-position: 0px -40px;
+}
+
+.micawatcher-toggle-button-pause {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAA8CAYAAABmdppWAAAAB3RJTUUH5AofERwjWj9JNAAAABd0RVh0U29mdHdhcmUAR0xEUE5HIHZlciAzLjRxhaThAAAACHRwTkdHTEQzAAAAAEqAKR8AAAAEZ0FNQQAAsY8L/GEFAAAABmJLR0QA/wD/AP+gvaeTAAAB7ElEQVR4nNXWy07CUACEYR/ZjW/h67gwMZoQSTTeolGDiiIoIpR7aWlLEeMclzNjTGTh4l/xZRK09JyN1Wq1sbm1vWJ9fcZyHh/GaUFjoz95gMksp6lB5wHGcU5Tg84DDCcZTQ06DzAYz2lq0HmAaJjS1KDzAL1BSlODzgO8RwlNDToP0GjHNDXoPMBtI6apQecBas2EpgadB7hrJTQ16DzAw+ucpgadB6i3M5oadB7gqVPQ1KDz4TF4L2jysTEeoNkraWrQeYBWtKSpQed/fKX/+ghYy5lSLJY09ZWdB8jykqYGnQdIs5KmBp0HmKULmhp0HmCaFDQ16PyajtFpTpPHqPEA/XFGU4POA7SjOU0NOg/w2MloatB5gOduTlODzn+/jnKafn1pD/DSL2hq0PnwR+4vaPKfYjxAZ1jS1KDz4a4yKmnybmN8uJ5NljQ16Hx48qcfNPlLMf6fnCnNbkqTD7bx4WrxltDUoPPhx95OaPLlYDzAfWtGU4POhwtkc0ZTg86HO/NTTFODzgNc12OaGnQe4Op+SlODzgMcnvVoatB5gJ39Fk0NOg+wW3mlqUHnAfaqbzQ16DzAwVGXpgadB6icRDQ16DxA9XxAU4POAxxfjmhq0HmA05sJTQ06D3BRi2lq0Pk/PwI+AaJ+Ps7UefRNAAAAAElFTkSuQmCC');
+}
+
+.micawatcher-toggle-status,
+.micawatcher-general-status {
+    align-items: center;
+    border-left: 1px solid #ccccea;
+    display: flex;
+    margin-left: 8px;
+    padding-left: 8px;
+}
+
+.micawatcher-button {
+    background: linear-gradient(to bottom, #f7fafc 0%,#e6e9f4 50%,#d5def2 51%,#e5edff 100%);
+    border: 1px solid #70758c;
+    cursor: pointer;
+}
+
+.micawatcher-button:hover {
+    background: linear-gradient(to bottom, #ffffff 0%,#eaeef7 50%,#dce6f7 51%,#eff4ff 100%);
+}
+
+.micawatcher-button:hover:active {
+    background: linear-gradient(to bottom, #e6eef7 0%,#d0d8f2 50%,#b3bce0 51%,#d4ddf7 100%);
 }
 
 .micawatcher-unselectable {
-    user-select: none;
     cursor: default;
+    user-select: none;
 }
