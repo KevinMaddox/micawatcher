@@ -91,14 +91,14 @@
     white-space: pre;
 }
 
-.micawatcher-add-controls {
+.micawatcher-add-data-bar {
     display: flex;
     align-items: center;
     padding: 8px 4px;
 }
 
-.micawatcher-add-input-obj,
-.micawatcher-add-input-key {
+.micawatcher-obj-name-field,
+.micawatcher-display-name-field {
     border: 1px solid #70758c;
     margin-right: 8px;
     padding: 4px;
@@ -107,7 +107,7 @@
     min-width: 0;
 }
 
-.micawatcher-add-button {
+.micawatcher-add-object-button {
     align-items: center;
     border-radius: 5px;
     display: flex;
@@ -116,7 +116,7 @@
     user-select: none;
 }
 
-.micawatcher-toggle-controls {
+.micawatcher-status-bar {
     border-top: 1px solid #ccccea;
     padding: 4px 8px;
     cursor: default;
@@ -125,7 +125,7 @@
     align-items: stretch;
 }
 
-.micawatcher-toggle-button {
+.micawatcher-pause-button {
     background-image:  url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAA8CAYAAABmdppWAAAAB3RJTUUH5AofESgSsMu6+QAAABd0RVh0U29mdHdhcmUAR0xEUE5HIHZlciAzLjRxhaThAAAACHRwTkdHTEQzAAAAAEqAKR8AAAAEZ0FNQQAAsY8L/GEFAAAABmJLR0QA/wD/AP+gvaeTAAABoUlEQVR4nOXVy0rDQBQG4D6yG9/C13EhiEKxoHhD0dLWXkxs2ubWNpkkTdLUlBwhGDKZzMyZheDiC1n9MMyZ/3TyPO+cnJ7lheIfC8JIlAIVwRDoBUkFJhgCtyShkgmGwLUXM4kEQ6C73XHhCYZAex0JYQVDoOVGUmjBELiyQ5TfwRA4M4gSRRYE9mdEiTJwoIUotSMP9VBK46V8zHdCWsdmbMRcuAd7ukyZhJ/ebJVSSZeDZmUV6PrS7QNQUrDFR+kKUB5YBKX7A1C2U+Ikq0BfShRnVNJjE0R7JuHB9sOUC/fTa1qjMuv1Z436iZTG+nK2MUqtYA17p0S5AibLWIky8NNMUGpH1qxESuOlfDmpkNaxMZw9F+7BXq4zJuGnt9pkVNLlYHuHCnR9Of43+Ec7RTMjoGynTBdhBfpSJkZIJT02Iz1gEh7soRZw4X56/SkR0loOb2MipbG+Xkc+Sq1gbx4tJcoVcH6lK1EGXnTnKLUjX/YWUhov5frWFNI6Nt17mwv3YPeeXCbhp3f3sqGSLoeHd68CXV/PAwL+5E45AhJDIljpNVMWAAAAAElFTkSuQmCC');
     background-position: 0px 0px;
     background-repeat: no-repeat;
@@ -134,19 +134,19 @@
     width: 20px;
 }
 
-.micawatcher-toggle-button:hover {
+.micawatcher-pause-button:hover {
     background-position: 0px -20px;
 }
 
-.micawatcher-toggle-button:hover:active {
+.micawatcher-pause-button:hover:active {
     background-position: 0px -40px;
 }
 
-.micawatcher-toggle-button-pause {
+.micawatcher-pause-button-paused {
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAA8CAYAAABmdppWAAAAB3RJTUUH5AofERwjWj9JNAAAABd0RVh0U29mdHdhcmUAR0xEUE5HIHZlciAzLjRxhaThAAAACHRwTkdHTEQzAAAAAEqAKR8AAAAEZ0FNQQAAsY8L/GEFAAAABmJLR0QA/wD/AP+gvaeTAAAB7ElEQVR4nNXWy07CUACEYR/ZjW/h67gwMZoQSTTeolGDiiIoIpR7aWlLEeMclzNjTGTh4l/xZRK09JyN1Wq1sbm1vWJ9fcZyHh/GaUFjoz95gMksp6lB5wHGcU5Tg84DDCcZTQ06DzAYz2lq0HmAaJjS1KDzAL1BSlODzgO8RwlNDToP0GjHNDXoPMBtI6apQecBas2EpgadB7hrJTQ16DzAw+ucpgadB6i3M5oadB7gqVPQ1KDz4TF4L2jysTEeoNkraWrQeYBWtKSpQed/fKX/+ghYy5lSLJY09ZWdB8jykqYGnQdIs5KmBp0HmKULmhp0HmCaFDQ16PyajtFpTpPHqPEA/XFGU4POA7SjOU0NOg/w2MloatB5gOduTlODzn+/jnKafn1pD/DSL2hq0PnwR+4vaPKfYjxAZ1jS1KDz4a4yKmnybmN8uJ5NljQ16Hx48qcfNPlLMf6fnCnNbkqTD7bx4WrxltDUoPPhx95OaPLlYDzAfWtGU4POhwtkc0ZTg86HO/NTTFODzgNc12OaGnQe4Op+SlODzgMcnvVoatB5gJ39Fk0NOg+wW3mlqUHnAfaqbzQ16DzAwVGXpgadB6icRDQ16DxA9XxAU4POAxxfjmhq0HmA05sJTQ06D3BRi2lq0Pk/PwI+AaJ+Ps7UefRNAAAAAElFTkSuQmCC');
 }
 
-.micawatcher-toggle-status,
+.micawatcher-pause-status,
 .micawatcher-general-status {
     align-items: center;
     border-left: 1px solid #ccccea;
