@@ -435,12 +435,13 @@ class MicaWatcher {
             // removed is an idiot who's never had a legitimate use case for it.
             //
             // Could we parse out dot-notated object trees, figuring out the
-            // parent, and assuming the parent is window if no parent was
+            // parent, and assume the parent is window if no parent was
             // specified? Sure we could, but then how the hell do you handle
             // variables declared with let? You don't. "Oh, but you shouldn't be
             // doing that anyway..." Blah blah blah. You're not wrong! But I
-            // also really don't care! Just accept that this world isn't black
-            // and white and corner cases exist.
+            // also really don't care! This is the easiest way to do it and it's
+            // it's a case where it makes sense. Just accept that this world
+            // isn't black and white and corner cases exist.
             obj = eval(this._elems.objNameField.value);
         }
         catch (e) {
