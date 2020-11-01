@@ -440,9 +440,9 @@ class MicaWatcher {
             // variables declared with let? You don't. "Oh, but you shouldn't be
             // doing that anyway..." Blah blah blah. You're not wrong! But I
             // also really don't care because it has nothing to do with this!
-            // This is the easiest way to do it and it's it's a case where it
-            // makes sense. Just accept that this world isn't black and white
-            // and corner cases exist.
+            // This is the easiest way to do it and it's a case where it makes
+            // sense. Just accept that this world isn't black and white and
+            // corner cases exist.
             obj = eval(this._elems.objNameField.value);
         }
         catch (e) {
