@@ -27,7 +27,6 @@
     border-bottom: 1px solid #70758c;
     display: flex;
     justify-content: space-between;
-    letter-spacing: 3px;
     padding: 4px;
     user-select: none;
 }
