@@ -1,60 +1,70 @@
-// TODO: Adding new variable uncollapses existing list, add object that keeps track of which are collapsed
-
 /**
-  * MicaWatcher
-  * JavaScript object-watching widget
-  *
-  * Wally Chantek, 2020
-  * https://github.com/wallychantek/micawatcher
-  */
+ *       _
+ *      |_|
+ *  _  _ _ ___  ___ _  _ ___ _____ ___ _   _ ___ ___
+ * | \/ | |  _||   | || |   |_   _|  _| |_| | __| _ |
+ * | .. | | |_ | - |    | - | | | | |_|  _  | _||   \
+ * |_||_|_|___||_|_|_/\_|_|_| |_| |___|_| |_|___|_|\_|
+ *
+ *
+ * MicaWatcher
+ * JavaScript object-watching widget
+ *
+ * Wally Chantek, 2020
+ * https://github.com/wallychantek/micawatcher
+ *
+**/
 
 class MicaWatcher {
-    isMicaWatcher;    // Indicator to prevent watchers from being watched.
+    _isMicaWatcher;      // Indicator to prevent watchers from being watched.
     
-    watchedObjs;      // The data being watched.
-    elems;            // References to watcher's various DOM elements.
+    _watchedObjs;        // The data being watched.
+    _elems;              // References to watcher's various DOM elements.
+    _collapsedElemFlags; // Keeps track of collapsed data for rebuilding list.
     
-    updateInterval;   // Updates the visual display of the watched data.
-    updateFrameRate;  // The visual update rate in FPS.
-    isPaused;         // Whether the watcher is running or paused.
-    statusMsgTimeout; // Clears status message after some time.
-    isGrabbable;      // Prevents grabbing when touching title-bar buttons.
-    isBeingGrabbed;   // Whether the watcher is being moved by the user.
-    grabOffset;       // Used for positioning when being grabbed.
-    restoredHeight;   // Used for restoring height after minimizing.
+    _updateInterval;     // Updates the visual display of the watched data.
+    _updateFrameRate;    // The visual update rate in FPS.
+    _isPaused;           // Whether the watcher is running or paused.
+    _statusMsgTimeout;   // Clears status message after some time.
+    _isGrabbable;        // Prevents grabbing when touching title-bar buttons.
+    _isBeingGrabbed;     // Whether the watcher is being moved by the user.
+    _grabOffset;         // Used for positioning when being grabbed.
+    _restoredHeight;     // Used for restoring height after minimizing.
     
-    isDisabled;       // Whether the watcher ignores watch/unwatch commands.
+    _isDisabled;         // Whether the watcher ignores watch/unwatch commands.
     
     /**
-      * Class constructor.
-      *
-      * @param {boolean} isEnabled         - Enables or disables the watcher.
-      * @param {object}  options           - Instance configuration options.
-      * @param {string}  options.name      - Instance's title bar name.
-      * @param {string}  options.fps       - Refresh rate for data display.
-      * @param {string}  options.startAuto - Starts/stops instance on creation.
-      * @param {string}  options.width     - Starting width of instance.
-      * @param {string}  options.height    - Starting height of instance.
-      * @param {string}  options.x         - Starting x position of instance.
-      * @param {string}  options.y         - Starting y position of instance.
-      */
+     *
+     * Class constructor.
+     *
+     * @param {boolean} isEnabled         - Enables or disables the watcher.
+     * @param {object}  options           - Instance configuration options.
+     * @param {string}  options.name      - Instance's title bar name.
+     * @param {string}  options.fps       - Refresh rate for data display.
+     * @param {string}  options.startAuto - Starts/stops instance on creation.
+     * @param {string}  options.width     - Starting width of instance.
+     * @param {string}  options.height    - Starting height of instance.
+     * @param {string}  options.x         - Starting x position of instance.
+     * @param {string}  options.y         - Starting y position of instance.
+     *
+    **/
     constructor(isEnabled = true, options = {}) {
         // Handle enabling/disabling of watcher. -------------------------------
         if (typeof isEnabled !== 'boolean') {
-            this.report(
+            this._report(
                 'Warning',
                 'Enable/disable toggle must be passed in as a boolean.'
             );
             isEnabled = true;
         }
         
-        this.isDisabled = !isEnabled;
-        if (this.isDisabled)
+        this._isDisabled = !isEnabled;
+        if (this._isDisabled)
             return;
         
         // - Validate configuration options. -----------------------------------
         if (typeof options !== 'object') {
-            this.report(
+            this._report(
                 'Warning',
                 'Configuration options must be passed in as an object.'
             );
@@ -75,13 +85,13 @@ class MicaWatcher {
         for (const key in options) {
             // Ensure key is allowed.
             if (!validOptions.hasOwnProperty(key)) {
-                this.report('Warning', `Invalid option "${key}".`);
+                this._report('Warning', `Invalid option "${key}".`);
                 continue;
             }
             
             // Ensure value is of a valid type.
             if (typeof options[key] !== validOptions[key][0]) {
-                this.report(
+                this._report(
                     'Warning',
                     `Invalid value for option "${key}". `
                   + `Value must be of type "${validOptions[key][0]}" `
@@ -99,27 +109,28 @@ class MicaWatcher {
         }
         
         // - Initialize variables. ---------------------------------------------
-        this.isMicaWatcher = true;
-        this.watchedObjs = {};
-        this.elems = {};
-        this.updateFrameRate = options.fps;
-        this.isPaused = options.startAuto;
-        this.isGrabbable = true;
-        this.isBeingGrabbed = false;
-        this.grabOffset = {
+        this._isMicaWatcher = true;
+        this._watchedObjs = {};
+        this._elems = {};
+        this._collapsedElemFlags = [];
+        this._updateFrameRate = options.fps;
+        this._isPaused = options.startAuto;
+        this._isGrabbable = true;
+        this._isBeingGrabbed = false;
+        this._grabOffset = {
             x: 0,
             y: 0
         }
-        this.restoredHeight = options.height;
+        this._restoredHeight = options.height;
         
         
         // - Set up and get references to DOM elements. ------------------------
-        this.elems.watcher = document.createElement('div');
-        this.elems.watcher.className = 'micawatcher';
-        this.elems.watcher.innerHTML =
+        this._elems.watcher = document.createElement('div');
+        this._elems.watcher.className = 'micawatcher';
+        this._elems.watcher.innerHTML =
             '<div class="micawatcher-title-bar">'
           +     '<h1>MicaWatcher</h1>'
-          +     '<div class="micawatcher-minimize-button micawatcher-button">'
+          +     '<div class="micawatcher-collapse-button micawatcher-button">'
           +         '<div></div>'
           +     '</div>'
           + '</div>'
@@ -145,87 +156,90 @@ class MicaWatcher {
           +     '<div class="micawatcher-general-status"></div>'
           + '</div>'
         ;
-        this.elems.watcher.style.width  = `${options.width}px`;
-        this.elems.watcher.style.height = `${options.height}px`;
-        this.elems.watcher.style.left   = `${options.x}px`;
-        this.elems.watcher.style.top    = `${options.y}px`;
-        document.body.appendChild(this.elems.watcher);
+        this._elems.watcher.style.width  = `${options.width}px`;
+        this._elems.watcher.style.height = `${options.height}px`;
+        this._elems.watcher.style.left   = `${options.x}px`;
+        this._elems.watcher.style.top    = `${options.y}px`;
+        document.body.appendChild(this._elems.watcher);
         
-        this.elems.titleBar = this.elems.watcher.getElementsByClassName(
+        this._elems.titleBar = this._elems.watcher.getElementsByClassName(
             'micawatcher-title-bar'
         )[0];
-        this.elems.titleBar.getElementsByTagName('h1')[0].innerHTML =
+        this._elems.titleBar.getElementsByTagName('h1')[0].innerHTML =
             options.name;
         
-        this.elems.itemContainer = this.elems.watcher.getElementsByClassName(
+        this._elems.itemContainer = this._elems.watcher.getElementsByClassName(
             'micawatcher-items'
         )[0];
         
-        this.elems.addDataBar = this.elems.watcher.getElementsByClassName(
+        this._elems.addDataBar = this._elems.watcher.getElementsByClassName(
             'micawatcher-add-data-bar'
         )[0];
         
-        this.elems.statusBar = this.elems.watcher.getElementsByClassName(
+        this._elems.statusBar = this._elems.watcher.getElementsByClassName(
             'micawatcher-status-bar'
         )[0];
         
-        this.elems.itemDataDisplays = [];
+        this._elems.itemDataDisplays = [];
         
-        this.elems.objNameField = this.elems.watcher.getElementsByClassName(
+        this._elems.objNameField = this._elems.watcher.getElementsByClassName(
             'micawatcher-obj-name-field'
         )[0];
-        this.elems.displayNameField = this.elems.watcher.getElementsByClassName(
-            'micawatcher-display-name-field'
-        )[0];
         
-        this.elems.pauseButton = this.elems.watcher.getElementsByClassName(
+        this._elems.displayNameField =
+            this._elems.watcher.getElementsByClassName(
+                'micawatcher-display-name-field'
+            )[0]
+        ;
+        
+        this._elems.pauseButton = this._elems.watcher.getElementsByClassName(
             'micawatcher-pause-button'
         )[0];
         
-        this.elems.pauseStatus = this.elems.watcher.getElementsByClassName(
+        this._elems.pauseStatus = this._elems.watcher.getElementsByClassName(
             'micawatcher-pause-status'
         )[0];
-        this.elems.generalStatus = this.elems.watcher.getElementsByClassName(
+        this._elems.generalStatus = this._elems.watcher.getElementsByClassName(
             'micawatcher-general-status'
         )[0];
         
-        let minimizeButtonElem = this.elems.watcher.getElementsByClassName(
-            'micawatcher-minimize-button'
+        let collapseButtonElem = this._elems.watcher.getElementsByClassName(
+            'micawatcher-collapse-button'
         )[0];
-        let addObjectButtonElem = this.elems.watcher.getElementsByClassName(
+        let addObjectButtonElem = this._elems.watcher.getElementsByClassName(
             'micawatcher-add-object-button'
         )[0];
         
         // - Set up event listeners. -------------------------------------------
-        this.elems.titleBar.addEventListener('mousedown', function() {
-            if (event.button === 0 && this.isGrabbable) {
-                let rect = this.elems.watcher.getBoundingClientRect();
-                this.grabOffset.x = event.x - rect.left;
-                this.grabOffset.y = event.y - rect.top;
-                this.isBeingGrabbed = true;
+        this._elems.titleBar.addEventListener('mousedown', function() {
+            if (event.button === 0 && this._isGrabbable) {
+                let rect = this._elems.watcher.getBoundingClientRect();
+                this._grabOffset.x = event.x - rect.left;
+                this._grabOffset.y = event.y - rect.top;
+                this._isBeingGrabbed = true;
             }
         }.bind(this));
         
         document.addEventListener('mouseup', function() {
             if (event.button === 0)
-                this.isBeingGrabbed = false;
+                this._isBeingGrabbed = false;
         }.bind(this));
         
         document.addEventListener('mousemove', function() {
-            if (this.isBeingGrabbed) {
-                this.elems.watcher.style.left =
-                    Math.max(event.x - this.grabOffset.x, 0) + 'px';
-                this.elems.watcher.style.top =
-                    Math.max(event.y - this.grabOffset.y, 0) + 'px';
+            if (this._isBeingGrabbed) {
+                this._elems.watcher.style.left =
+                    Math.max(event.x - this._grabOffset.x, 0) + 'px';
+                this._elems.watcher.style.top =
+                    Math.max(event.y - this._grabOffset.y, 0) + 'px';
             }
         }.bind(this));
         
-        minimizeButtonElem.addEventListener('click', function() {
+        collapseButtonElem.addEventListener('click', function() {
             // Get all elements below title bar.
             let elems = [
-                this.elems.itemContainer,
-                this.elems.addDataBar,
-                this.elems.statusBar
+                this._elems.itemContainer,
+                this._elems.addDataBar,
+                this._elems.statusBar
             ];
             
             // Toggle visibility of elements.
@@ -234,266 +248,335 @@ class MicaWatcher {
                     elem.style.display = 'flex';
                 }
                 else {
-                    this.restoredHeight = this.elems.watcher.offsetHeight;
+                    this._restoredHeight = this._elems.watcher.offsetHeight;
                     elem.style.display = 'none';
                 }
             }
             
             // Set CSS properties based on visibility.
             if (elems[0].style.display === 'none') {
-                this.elems.titleBar.style.border = 'none';
-                this.elems.watcher.style.height = 'auto';
-                this.elems.watcher.style.minHeight = 'auto';
-                this.elems.watcher.style.resize = 'none';
+                this._elems.titleBar.style.border = 'none';
+                this._elems.watcher.style.height = 'auto';
+                this._elems.watcher.style.minHeight = 'auto';
+                this._elems.watcher.style.resize = 'none';
             }
             else {
-                this.elems.titleBar.style.removeProperty('border');
-                this.elems.watcher.style.height = this.restoredHeight + 'px';
-                this.elems.watcher.style.minHeight = '240px';
-                this.elems.watcher.style.resize = 'both';
+                this._elems.titleBar.style.removeProperty('border');
+                this._elems.watcher.style.height = this._restoredHeight + 'px';
+                this._elems.watcher.style.minHeight = '240px';
+                this._elems.watcher.style.resize = 'both';
             }
         }.bind(this));
         
-        minimizeButtonElem.addEventListener('mouseover', function() {
-            this.isGrabbable = false;
+        collapseButtonElem.addEventListener('mouseover', function() {
+            this._isGrabbable = false;
         }.bind(this));
         
-        minimizeButtonElem.addEventListener('mouseout', function() {
-            this.isGrabbable = true;
+        collapseButtonElem.addEventListener('mouseout', function() {
+            this._isGrabbable = true;
         }.bind(this));
         
-        this.elems.objNameField.addEventListener(
+        this._elems.objNameField.addEventListener(
             'keydown',
-            this.addItem.bind(this)
+            this._addItemThroughUI.bind(this)
         );
         
-        this.elems.displayNameField.addEventListener(
+        this._elems.displayNameField.addEventListener(
             'keydown',
-            this.addItem.bind(this)
+            this._addItemThroughUI.bind(this)
         );
         
         addObjectButtonElem.addEventListener(
             'click',
-            this.addItem.bind(this)
+            this._addItemThroughUI.bind(this)
         );
         
-        this.elems.pauseButton.addEventListener('click', function() {
+        this._elems.pauseButton.addEventListener('click', function() {
             // Pause
-            if (!this.isPaused) {
-                clearInterval(this.updateInterval);
-                for (const key in this.elems.itemDataDisplays) {
-                    this.elems.itemDataDisplays[key].classList.remove(
+            if (!this._isPaused) {
+                clearInterval(this._updateInterval);
+                for (const key in this._elems.itemDataDisplays) {
+                    this._elems.itemDataDisplays[key].classList.remove(
                         'micawatcher-unselectable'
                     );
                 }
-                this.elems.pauseStatus.innerHTML = 'Paused';
-                this.elems.pauseButton.classList.remove(
+                this._elems.pauseStatus.innerHTML = 'Paused';
+                this._elems.pauseButton.classList.remove(
                     'micawatcher-pause-button-paused'
                 );
             }
             // Resume
             else {
-                for (const key in this.elems.itemDataDisplays) {
-                    this.elems.itemDataDisplays[key].classList.add(
+                for (const key in this._elems.itemDataDisplays) {
+                    this._elems.itemDataDisplays[key].classList.add(
                         'micawatcher-unselectable'
                     );
                 }
-                this.elems.pauseStatus.innerHTML = 'Active';
-                this.updateInterval = setInterval(
-                    this.updateDisplay.bind(this),
-                    1000 / this.updateFrameRate
+                this._elems.pauseStatus.innerHTML = 'Active';
+                this._updateInterval = setInterval(
+                    this._updateDisplay.bind(this),
+                    1000 / this._updateFrameRate
                 );
-                this.elems.pauseButton.classList.add(
+                this._elems.pauseButton.classList.add(
                     'micawatcher-pause-button-paused'
                 );
             }
             
-            this.isPaused = !this.isPaused;
+            this._isPaused = !this._isPaused;
         }.bind(this));
         
-        // Start watcher.
-        this.elems.pauseButton.click();
+        // - Finish up initialization. -----------------------------------------
+        this._elems.pauseButton.click();
     }
     
     /**
-      * Adds an object to the instance's watch list.
-      *
-      * @param {object} objToWatch - The object to be watched.
-      * @param {string} key        - The desired display name for the object.
-      */
+     *
+     * Adds an object to the instance's watch list.
+     *
+     * @param {object} objToWatch - The object to be watched.
+     * @param {string} key        - The desired display name for the object.
+     *
+    **/
     watch(objToWatch, key) {
-        // Don't do anything if watcher is disabled.
-        if (this.isDisabled)
+        if (this._isDisabled)
             return;
         
         // Validate data.
         if (typeof key !== 'string' || key.length === 0) {
-            this.report('Warning', 'Invalid key. Key was of type: "' + (typeof key) + '". Key must be a string.');
+            this._report(
+                'Warning',
+                `Invalid key. Key was of type: ${(typeof key)}. `
+              + 'Key must be a string.'
+            );
             return;
         }
         else if (typeof objToWatch !== 'object') {
-            this.report('Warning', 'Data for key: "' + key + '" is of type: "' + (typeof objToWatch) + '". Watched data can only be an object.');
+            this._report(
+                'Warning',
+                `Data for key: "${key}" is of type: ${(typeof objToWatch)}. `
+              + 'Watched data can only be an object.'
+            );
             return;
         }
-        else if (this.watchedObjs.hasOwnProperty(key)) {
-            this.report('Warning', 'Key "' + key + '" has already been used. Please use a different key or ensure you\'re not accidentally re-adding the same object.');
+        else if (this._watchedObjs.hasOwnProperty(key)) {
+            this._report(
+                'Warning',
+                `Key "' + key + '" has already been used. `
+              + 'Please use a different key or ensure you\'re not accidentally '
+              + 're-adding the same object.'
+            );
             return;
         }
         else if (objToWatch.isMicaWatcher) {
-            this.report('Warning', 'To prevent cyclic object value errors from occurring, watching a MicaWatcher object is not allowed.');
+            this._report(
+                'Warning',
+                'To prevent cyclic object value errors from occurring, '
+              + 'watching a MicaWatcher object is not allowed.'
+            );
             return;
         }
         
-        // Store pointer to object.
-        this.watchedObjs[key] = objToWatch;
+        this._watchedObjs[key] = objToWatch;
+        this._rebuildItemList();
         
-        // Update display with new object list.
-        this.refreshItemList();
+        this._elems.objNameField.value = '';
+        this._elems.displayNameField.value = '';
         
-        // Clear input fields in case we added this through the watcher UI.
-        this.elems.objNameField.value = '';
-        this.elems.displayNameField.value = '';
-        
-        // Set focus back to object name field if appropriate.
-        if (document.activeElement === this.elems.displayNameField)
-            this.elems.objNameField.focus();
+        if (document.activeElement === this._elems.displayNameField)
+            this._elems.objNameField.focus();
     }
     
     /**
-      * Removes an object from the instance's watch list.
-      *
-      * @param {string} key - The display name used to identify the object.
-      */
+     *
+     * Removes an object from the instance's watch list.
+     *
+     * @param {string} key - The display name used to identify the object.
+     *
+    **/
     unwatch(key) {
-        // Don't do anything if watcher is disabled.
-        if (this.isDisabled)
+        if (this._isDisabled)
             return;
         
-        // Remove pointer to object.
-        delete this.watchedObjs[key];
-        
-        // Update display with new object list.
-        this.refreshItemList();
+        delete this._watchedObjs[key];
+        this._rebuildItemList();
     }
     
     /**
-      * Specifies an item to be watched via the instance's UI inputs.
-      */
-    addItem() {
+     *
+     * Specifies an item to be watched via the instance's UI inputs.
+     *
+    **/
+    _addItemThroughUI() {
         // Stop if user hit a key other than enter.
         if (event.type === 'keydown' && event.keyCode !== 13) {
             return;
         }
         
-        // Initialize variables.
         let obj;
-        let objName = '' + this.elems.objNameField.value;
-        let objKey = '' + this.elems.displayNameField.value;
+        let objName = '' + this._elems.objNameField.value;
+        let objKey = '' + this._elems.displayNameField.value;
         
         // Validate input fields.
         if (objName.length === 0) {
-            this.report('Error', 'Please provide a valid object name.');
+            this._report('Error', 'Please provide a valid object name.');
             return;
         }
         else if (objKey.length === 0) {
-            this.report('Error', 'Please provide a valid display name.');
+            this._report('Error', 'Please provide a valid display name.');
             return;
         }
         
         // Attempt to retrieve object by name.
         try {
-            obj = eval(this.elems.objNameField.value);
+            // Oh noez, the evil eval() function! I should never used it because
+            // MDN and random bloggers said so! Dude, MicaWatcher a debugging
+            // tool. Who cares. If you're deploying code with this script in it,
+            // that's on YOU, it's NOT on me. Anyone who thinks eval() should be
+            // removed is an idiot who's never had a legitimate use case for it.
+            //
+            // Could we parse out dot-notated object trees, figuring out the
+            // parent, and assuming the parent is window if no parent was
+            // specified? Sure we could, but then how the hell do you handle
+            // variables declared with let? You don't. "Oh, but you shouldn't be
+            // doing that anyway..." Blah blah blah. You're not wrong! But I
+            // also really don't care! Just accept that this world isn't black
+            // and white and corner cases exist.
+            obj = eval(this._elems.objNameField.value);
         }
         catch (e) {
-            this.report('Error', e.message);
+            this._report('Error', e.message);
             return;
         }
         
-        // Add object to watch list.
         this.watch(obj, objKey);
     }
     
     /**
-      * Repopulates the watched-object display list.
-      */
-    refreshItemList() {
+     *
+     * Destroys and rebuilds the watched-object display list.
+     *
+    **/
+    _rebuildItemList() {
         // Reset currently-displayed elements.
-        for (const key in this.elems.itemDataDisplays)
-            delete this.elems.itemDataDisplays[key];
-        this.elems.itemContainer.innerHTML = '';
+        this._collapsedElemFlags = [];
+        
+        for (const key in this._elems.itemDataDisplays) {
+            if (
+                this._watchedObjs.hasOwnProperty(key)
+             && this._elems.itemDataDisplays[key].style.display === 'none'
+            ) {
+                this._collapsedElemFlags.push(key);
+            }
+            
+            delete this._elems.itemDataDisplays[key];
+        }
+        
+        this._elems.itemContainer.innerHTML = '';
         
         // Create new display items for watched data.
-        for (const key in this.watchedObjs) {
-            // Create DOM element.
+        for (const key in this._watchedObjs) {
             let newItem = document.createElement('div');
             newItem.classList.add('micawatcher-item');
             newItem.setAttribute('data-key', key);
             newItem.innerHTML =
                 '<div>'
-              +     '<h2>' + key + '</h2>'
-              +     '<div class="micawatcher-minimize-button micawatcher-button"><div></div></div>'
-              +     '<div class="micawatcher-remove-button micawatcher-button"><div></div></div>'
+              +     `<h2>${key}</h2>`
+              +     '<div class="'
+              +         'micawatcher-collapse-button '
+              +         'micawatcher-button'
+              +     '">'
+              +         '<div></div>'
+              +     '</div>'
+              +     '<div class="'
+              +         'micawatcher-remove-button '
+              +         'micawatcher-button'
+              +     '">'
+              +         '<div></div>'
+              +     '</div>'
               + '</div>'
             ;
-            newItem.innerHTML += (!this.isPaused) ? '<p class="micawatcher-unselectable"></p>' : '<p></p>';
-            this.elems.itemContainer.appendChild(newItem);
             
-            // Store reference to item's data container.
-            this.elems.itemDataDisplays[key] = newItem.getElementsByTagName('p')[0];
+            let newDataDisplay = document.createElement('p');
+            
+            if (!this._isPaused)
+                newDataDisplay.classList.add('micawatcher-unselectable');
+            
+            if (this._collapsedElemFlags.includes(key))
+                newDataDisplay.style.display = 'none';
+            
+            newItem.appendChild(newDataDisplay);
+              
+            this._elems.itemContainer.appendChild(newItem);
+            
+            this._elems.itemDataDisplays[key] = newItem.getElementsByTagName(
+                'p'
+            )[0];
         }
         
-        // Add listeners for minimize & remove buttons.
-        let newItems = this.elems.itemContainer.getElementsByClassName('micawatcher-item');
+        // Add listeners for collapse & remove buttons.
+        let newItems = this._elems.itemContainer.getElementsByClassName(
+            'micawatcher-item'
+        );
         for (const item of newItems) {
-            item.getElementsByClassName('micawatcher-minimize-button')[0].addEventListener('click', this.minimizeItem);
-            item.getElementsByClassName('micawatcher-remove-button')[0].addEventListener('click', this.unwatch.bind(this, item.getAttribute('data-key')));
+            item.getElementsByClassName(
+                'micawatcher-collapse-button'
+            )[0].addEventListener('click', function() {
+                let elem = this.parentNode.nextSibling;
+                
+                if (elem.style.display === 'none')
+                    elem.style.display = 'block';
+                else
+                    elem.style.display = 'none';
+            });
+            
+            item.getElementsByClassName(
+                'micawatcher-remove-button'
+            )[0].addEventListener(
+                'click',
+                this.unwatch.bind(this, item.getAttribute('data-key'))
+            );
         }
         
-        // Force data display update.
-        this.updateDisplay();
+        this._updateDisplay();
     }
     
     /**
-      * Shows current data in the watched-object display list.
-      */
-    updateDisplay() {
-        for (const key in this.elems.itemDataDisplays)
-            this.elems.itemDataDisplays[key].innerHTML = JSON.stringify(this.watchedObjs[key], null, 2);
+     *
+     * Shows current data in the watched-object display list.
+     *
+    **/
+    _updateDisplay() {
+        for (const key in this._elems.itemDataDisplays) {
+            this._elems.itemDataDisplays[key].innerHTML = JSON.stringify(
+                this._watchedObjs[key],
+                null,
+                2
+            );
+        }
     }
     
     /**
-      * Minimizes or restores the display for a watched object.
-      */
-    minimizeItem() {
-        let elem = this.parentNode.nextSibling;
-        
-        if (elem.style.display === 'none')
-            elem.style.display = 'block';
-        else
-            elem.style.display = 'none';
-    }
-    
-    /**
-      * Clears the UI's status message.
-      */
-    clearStatusMessage() {
-        this.elems.generalStatus.innerHTML = '';
-    }
-    
-    /**
-      * Logs a message to the console while also displaying a notice in the UI.
-      *
-      * @param {string} level - The severity level (completely arbitrary).
-      * @param {string} msg   - The message to log to the console.
-      */
-    report(level, msg) {
+     *
+     * Logs a message to the console while also displaying a notice in the UI.
+     *
+     * @param {string} level - The severity level (completely arbitrary).
+     * @param {string} msg   - The message to log to the console.
+     *
+    **/
+    _report(level, msg) {
         console.log('MicaWatcher ' + level + ': ' + msg);
-        if (this.elems.generalStatus)
-            this.elems.generalStatus.innerHTML = 'Error! Please check console.';
         
-        window.clearTimeout(this.statusMsgTimeout);
-        this.statusMsgTimeout = window.setTimeout(this.clearStatusMessage.bind(this), 3000);
+        // We need to check if the status message DOM element exists yet, as we
+        // may need to call this before any HTML is injected.
+        if (this._elems.generalStatus) {
+            this._elems.generalStatus.innerHTML =
+                'Error! Please check console.'
+            ;
+        
+            window.clearTimeout(this._statusMsgTimeout);
+            this._statusMsgTimeout = window.setTimeout(function() {
+                this._elems.generalStatus.innerHTML = '';
+            }.bind(this), 3000);
+        }
     }
 }
-
-

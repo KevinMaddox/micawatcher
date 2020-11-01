@@ -35,7 +35,7 @@
     font-weight: bold;
 }
 
-.micawatcher-minimize-button,
+.micawatcher-collapse-button,
 .micawatcher-remove-button {
     align-items: center;
     border-radius: 2px;
@@ -46,7 +46,7 @@
     width: 16px;
 }
 
-.micawatcher-minimize-button div {
+.micawatcher-collapse-button div {
     background-image:  url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAB3RJTUUH5AofEgYQV4RsoAAAABd0RVh0U29mdHdhcmUAR0xEUE5HIHZlciAzLjRxhaThAAAACHRwTkdHTEQzAAAAAEqAKR8AAAAEZ0FNQQAAsY8L/GEFAAAABmJLR0QA/wD/AP+gvaeTAAAAHklEQVR4nGP4//8/Az6MV5I4BQWlPf/xYcIKaO9IAFHitnHuVUnVAAAAAElFTkSuQmCC');
     background-position: center center;
     background-repeat: no-repeat;
