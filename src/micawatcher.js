@@ -428,7 +428,7 @@ class MicaWatcher {
         
         // Attempt to retrieve object by name.
         try {
-            // Oh noez, the evil eval() function! I should never used it because
+            // Oh noez, the evil eval() function! I should never use it because
             // MDN and random bloggers said so! Dude, MicaWatcher is a debugging
             // tool. Who cares. If you're deploying code with this script in it,
             // that's on YOU, it's NOT on me. Anyone who thinks eval() should be
