@@ -197,6 +197,7 @@ class MicaWatcher {
         this._elems.pauseStatus = this._elems.watcher.getElementsByClassName(
             'micawatcher-pause-status'
         )[0];
+        
         this._elems.generalStatus = this._elems.watcher.getElementsByClassName(
             'micawatcher-general-status'
         )[0];
@@ -204,6 +205,7 @@ class MicaWatcher {
         let collapseButtonElem = this._elems.watcher.getElementsByClassName(
             'micawatcher-collapse-button'
         )[0];
+        
         let addObjectButtonElem = this._elems.watcher.getElementsByClassName(
             'micawatcher-add-object-button'
         )[0];
