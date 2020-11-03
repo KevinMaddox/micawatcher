@@ -77,7 +77,7 @@ class MicaWatcher {
             'height':    ['number' , 240          ],
             'x':         ['number' , 24           ],
             'y':         ['number' , 24           ]
-        }
+        };
         
         // Perform validation.
         for (const key in options) {
