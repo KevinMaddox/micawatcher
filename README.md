@@ -41,11 +41,13 @@ MicaWatcher(isEnabled, options)
 | y | number | 24 | The starting y position of the instance, measured in pixels. |
 ### Member Functions
 #### watch(objToWatch, key)
+Adds an object to the instance's watch list.
 | Arugment | Type | Description |
 | --- | --- | --- |
 | objToWatch | object | The object to be added to the watch list. |
 | key | string | A meaningful name/key for the object, which will appear in the watch list. |
 #### unwatch(key)
+Removes an object from the instance's watch list.
 | Arugment | Type | Description |
 | --- | --- | --- |
 | key | string | The name/key previously assigned to the object via watch(). |
