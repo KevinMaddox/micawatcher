@@ -333,11 +333,12 @@ class MicaWatcher {
      *
      * Adds an object to the instance's watch list.
      *
-     * @param {object} objToWatch - The object to be watched.
-     * @param {string} key        - The desired display name for the object.
+     * @param {object}  objToWatch     - The object to be watched.
+     * @param {string}  key            - The list display name for the object.
+     * @param {boolean} startCollapsed - Collapse item in list by default.
      *
     **/
-    watch(objToWatch, key) {
+    watch(objToWatch, key, startCollapsed = false) {
         if (this._isDisabled)
             return;
         
@@ -375,6 +376,9 @@ class MicaWatcher {
             );
             return;
         }
+        
+        if (startCollapsed)
+            this._collapsedElemFlags.push(key);
         
         this._watchedObjs[key] = objToWatch;
         this._rebuildItemList();
@@ -460,16 +464,7 @@ class MicaWatcher {
     **/
     _rebuildItemList() {
         // Reset currently-displayed elements.
-        this._collapsedElemFlags = [];
-        
         for (const key in this._elems.itemDataDisplays) {
-            if (
-                this._watchedObjs.hasOwnProperty(key)
-             && this._elems.itemDataDisplays[key].style.display === 'none'
-            ) {
-                this._collapsedElemFlags.push(key);
-            }
-            
             delete this._elems.itemDataDisplays[key];
         }
         
@@ -520,16 +515,24 @@ class MicaWatcher {
             'micawatcher-item'
         );
         for (const item of newItems) {
-            item.getElementsByClassName(
+            let collapseButtonElem = item.getElementsByClassName(
                 'micawatcher-collapse-button'
-            )[0].addEventListener('click', function() {
-                let elem = this.parentNode.nextSibling;
+            )[0];
+            collapseButtonElem.addEventListener('click', function() {
+                let elem = collapseButtonElem.parentNode.nextSibling;
+                let key = collapseButtonElem.closest('.micawatcher-item')
+                    .getAttribute('data-key');
                 
-                if (elem.style.display === 'none')
+                if (elem.style.display === 'none') {
                     elem.style.display = 'block';
-                else
+                    this._collapsedElemFlags.push(key);
+                }
+                else {
                     elem.style.display = 'none';
-            });
+                    this._collapsedElemFlags = this._collapsedElemFlags
+                        .filter(e => e !== key);
+                }
+            }.bind(this));
             
             item.getElementsByClassName(
                 'micawatcher-remove-button'
