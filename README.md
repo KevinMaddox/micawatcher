@@ -1,4 +1,5 @@
 # MicaWatcher
+[Demo](https://github.com/kevinmaddox)
 MicaWatcher is a JavaScript object-watching widget.
 <p align="center"><img src="https://raw.githubusercontent.com/WallyChantek/micawatcher/main/images/img01.png" alt="MicaWatcher Preview"/></p>
 
