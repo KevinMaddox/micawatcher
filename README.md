@@ -1,7 +1,9 @@
 # MicaWatcher
-[Demo](https://kevinmaddox.github.io/demo/micawatcher/micawatcher.html)<br>
 MicaWatcher is a JavaScript object-watching widget.
 <p align="center"><img src="https://raw.githubusercontent.com/WallyChantek/micawatcher/main/images/img01.png" alt="MicaWatcher Preview"/></p>
+
+## Demo
+[MicaWatcher Demo](https://kevinmaddox.github.io/demo/micawatcher/micawatcher.html)
 
 ## Installation
 Simply include `micawatcher.js` and `micawatcher.css` in the page you wish to use it on.
