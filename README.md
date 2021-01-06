@@ -42,7 +42,7 @@ MicaWatcher(isEnabled, options)
 | height | number | 240 | The starting height of the instance, measured in pixels. |
 | x | number | 24 | The starting x position of the instance, measured in pixels. |
 | y | number | 24 | The starting y position of the instance, measured in pixels. |
-### Member Functions
+### Public Member Functions
 #### watch(objToWatch, key)
 Adds an object to the instance's watch list.
 | Arugment | Type | Description |
